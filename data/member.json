@@ -1,0 +1,17 @@
+[
+    {
+      "email": "Fitrah@gmail.com",
+      "password": "asdf123",
+      "role": "ContentCreator"
+    },
+    {
+      "email": "Nanda@gmail.com",
+      "password": "qwer123",
+      "role": "Viewers"
+    },
+    {
+      "email": "ROmzi@gmail.com",
+      "password": "zxcv123",
+      "role": "Viewers"
+    }
+  ]
