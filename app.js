@@ -5,9 +5,10 @@ const router = require('./router/ContentCreator')
 
 app.set('view engine', 'ejs')
 
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({ extended: false }))
 
 app.use('/', router)
+//test
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
