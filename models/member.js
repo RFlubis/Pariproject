@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       this.hasOne(models.Profile)
-      this.hasMany(models.Post)
 
     }
   }

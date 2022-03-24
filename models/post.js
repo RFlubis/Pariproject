@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Member)
+      this.belongsTo(models.Profile)
       this.hasMany(models.PostTag, { foreignKey: 'PostId' })
       this.belongsToMany(models.Tag, { through: models.PostTag })
 
@@ -21,9 +21,15 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     fileUpload: DataTypes.STRING,
     description: DataTypes.STRING,
-    MemberId: DataTypes.INTEGER
+    ProfileId: DataTypes.INTEGER,
+    like: DataTypes.INTEGER
   }, {
     sequelize,
+    hooks: {
+      beforeCreate: (instance, options) => {
+        instance.like = 0
+      },
+    },
     modelName: 'Post',
   });
   return Post;

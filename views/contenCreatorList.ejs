@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <h3>Selamat Datang <%=result.Profile.name%>
+    <h3>Selamat Datang <%=result.name%>
     </h3>
 
     <h2>Berikut Konten yang anda buat</h2>
-    <button onclick="location.href='/<%= result.id%>/creator/add'">Add Content</button><br><br>
+    <button onclick="location.href='/<%= result.MemberId%>/creator/add'">Add Content</button><br><br>
     <table border="1">
         <tr>
             <th>Title</th>
@@ -31,8 +31,8 @@
                     <%= e.description %>
                 </td>
                 <td>
-                    <a href="/<%=result.id%>/<%=e.id%>/delete"><button>Delete Content</button></a>
-                    <a href="/<%=result.id%>/<%=e.id%>/edit"><button>edit Content</button></a>
+                    <a href="/<%=result.MemberId%>/<%=e.id%>/delete"><button>Delete Content</button></a>
+                    <a href="/<%=result.MemberId%>/<%=e.id%>/edit"><button>edit Content</button></a>
                 </td>
             </tr>
             <%}) %>

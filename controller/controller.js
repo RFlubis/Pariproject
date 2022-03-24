@@ -1,9 +1,7 @@
 'use strict'
 
 const { Profile, Member, Post } = require('../models/index')
-const member = require('../models/member')
 const bcrypt = require('bcryptjs')
-const res = require('express/lib/response')
 
 class Controller {
     static Home(req, res) {
@@ -43,22 +41,22 @@ class Controller {
     static loginpost(req, res) {
         const { email, password } = req.body
 
-
+        console.log(email, password);
         Member.findOne({
             where: { email },
             include: [Profile]
         })
             .then(result => {
-
                 if (result) {
                     const valid = bcrypt.compareSync(password, result.password)
-
                     if (valid) {
+
                         req.session.member = result.id
+
                         if (!result.Profile) {
                             return res.redirect(`/${result.id}/profile`)
                         }
-                        return res.redirect(`/${result.id}/mainhome`)
+                        return res.redirect(`/${result.Profile.id}/mainhome`)
                     } else {
                         const error = 'invalid username/password'
                         return res.redirect(`./login?error=${error}`)
@@ -77,16 +75,22 @@ class Controller {
     static mainhome(req, res) {
         const { userid } = req.params
         let data = {}
-        Member.findByPk(userid, {
-            include: [Profile]
+        Profile.findByPk(userid, {
+            include: [Member]
         })
-            .then(member => {
-                data.member = member
-                return Post.findAll()
+            .then(profile => {
+
+                data.profile = profile
+
+                return Post.findAll({
+                    include: [Profile],
+                    order: ['id']
+                })
             })
             .then(Post => {
                 data.Post = Post
-                res.render('mainhome', { data })
+                console.log(data);
+                res.render('mainhome', { data, userid })
             })
             .catch(err => {
                 console.log(err);
@@ -97,6 +101,7 @@ class Controller {
     static profile(req, res) {
         const { error } = req.query
         const { userid } = req.params
+        console.log(userid);
         res.render('profile', { userid, error })
     }
 
@@ -115,8 +120,16 @@ class Controller {
                 return Profile.create(option)
             })
             .then(() => {
-                res.redirect(`/${userid}/mainhome`)
-            }).catch(err => {
+                return Profile.findOne({
+                    where: {
+                        MemberId: userid
+                    }
+                })
+            })
+            .then((result) => {
+                res.redirect(`/${result.id}/mainhome`)
+            })
+            .catch(err => {
                 if (err.name === "SequelizeValidationError") {
                     err = err.errors
                     err = err.map(e => { return e.message })
@@ -128,13 +141,15 @@ class Controller {
     static creatorContentList(req, res) {
         const { userid } = req.params
 
-        Member.findByPk(userid, {
-            include: [Post, Profile]
+        Profile.findByPk(userid, {
+            include: [Post]
         })
             .then((result) => {
+                // console.log(result);
                 res.render('contenCreatorList', { result })
             })
             .catch((err) => {
+                console.log(err);
                 res.send(err)
             })
     }
@@ -149,7 +164,7 @@ class Controller {
         const { filename } = req.file
         const { title, description } = req.body
         let newPost = {
-            title, fileUpload: filename, description, MemberId: userid
+            title, fileUpload: filename, description, ProfileId: userid
         }
 
         Post.create(newPost)
@@ -163,31 +178,27 @@ class Controller {
     static deletePost(req, res) {
         const { postid } = req.params
 
-        Post.findByPk(postid, {
-            include: [Member]
+        Post.destroy({
+            where: {
+                id: postid
+            }
         })
-            .then((result) => {
-                return Post.destroy({
-                    where: {
-                        id: result.id
-                    }
-                })
-            })
             .then(() => {
                 res.redirect('../creator')
             })
             .catch((err) => {
+
                 res.send(err)
             })
 
     }
 
     static editPostGet(req, res) {
-        const { postid } = req.params
+        const { postid, userid } = req.params
         Post.findByPk(postid)
             .then((result) => {
 
-                res.render("editContent", { result })
+                res.render("editContent", { result, userid })
             })
             .catch((err) => {
                 res.send(err)
@@ -200,22 +211,51 @@ class Controller {
         let editPost = {
             title, fileUpload: avatar, description
         }
-        Post.findByPk(postid, {
-            include: [Member]
+
+        Post.update(editPost, {
+            where: {
+                id: postid
+            }
         })
-            .then(() => {
-                return Post.update(editPost, {
-                    where: {
-                        id: postid
-                    }
-                })
-            })
             .then(() => {
                 res.redirect('../creator')
             })
             .catch((err) => {
                 res.send(err)
             })
+    }
+
+    static like(req, res) {
+        const { userid, postid } = req.params
+
+
+        Post.increment({ like: 1 }, { where: { id: postid } })
+            .then(() => {
+                res.redirect(`/${userid}/mainhome`)
+            }).catch(err => {
+                res.redirect(err)
+            })
+    }
+
+    static dilike(req, res) {
+        const { userid, postid } = req.params
+
+        Post.decrement({ like: 1 }, { where: { id: postid } })
+            .then(() => {
+                res.redirect(`/${userid}/mainhome`)
+            }).catch(err => {
+                res.redirect(err)
+            })
+    }
+
+    static logout(req, res) {
+        req.session.destroy(err => {
+            if (err) {
+                res.send(err)
+            } else {
+                res.redirect('/')
+            }
+        })
     }
 }
 
