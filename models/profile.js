@@ -15,11 +15,31 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Profile.init({
-    name: DataTypes.STRING,
-    gender: DataTypes.STRING,
-    registeredEmail: DataTypes.STRING,
-    selfDescription: DataTypes.STRING,
-    MemberId: DataTypes.INTEGER
+    name: {
+      type : DataTypes.STRING,
+      validate: {
+        notEmpty: {msg : 'Please input name'}
+      }
+    },
+    gender: {
+      type : DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {msg : 'Please choose gender'}
+      }
+    },
+    registeredEmail: {
+      type : DataTypes.STRING,
+    },
+    selfDescription: {
+      type : DataTypes.STRING,
+      validate: {
+        notEmpty: {msg : 'Please input selfDescription'}
+      }
+    },
+    MemberId: {
+      type : DataTypes.INTEGER
+    },
   }, {
     sequelize,
     modelName: 'Profile',
