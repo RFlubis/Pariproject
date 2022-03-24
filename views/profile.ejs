@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/<%= userid %>/profile" method="post">
+        <label>Name</label><br>
+        <input type="text" id="fname" name="name" value=""><br><br>
+        <label>Gender</label><br>
+        <input type="radio" id="gender" name="gender" value="male">Male<br>
+        <input type="radio" id="gender" name="gender" value="female">Female<br><br>
+        <label>Self Description</label><br>
+        <textarea id="selfDescription" name="selfDescription" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+      </form> 
+      <% if(error){%> 
+        <% error = error.split(',') %> 
+        <% error.forEach(element => { %> 
+          <p style="color: red"><%= element %> </p>
+        <%}); %> 
+      <% } %> 
+</body>
+</html>

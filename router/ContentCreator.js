@@ -18,6 +18,8 @@ router.use((req, res, next) => {
     next()
   })
 
+router.get('/:userid/profile', Controller.profile)
+router.post('/:userid/profile', Controller.profilepost)
 router.get('/:userid/mainhome', Controller.mainhome)
 
 module.exports = router

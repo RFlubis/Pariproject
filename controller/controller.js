@@ -54,7 +54,9 @@ class Controller {
 
                     if (valid) {
                         req.session.member = result.id
-
+                        if(!result.Profile){
+                            return res.redirect(`/${result.id}/profile`)
+                        }
                         return res.redirect(`/${result.id}/mainhome`)
                     } else {
                         const error = 'invalid username/password'
@@ -89,6 +91,37 @@ class Controller {
                 console.log(err);
                 res.send(err)
             })
+    }
+
+    static profile(req,res){
+        const {error} = req.query
+        const {userid} = req.params
+        res.render('profile',{userid,error})
+    }
+
+    static profilepost(req,res){
+        const {userid} = req.params
+        const {name,gender,selfDescription} = req.body
+        const option = {
+            name,
+            gender,
+            selfDescription,
+            MemberId : userid
+        }
+        Member.findByPk(userid)
+        .then(result=>{
+            option.registeredEmail = result.email
+            return Profile.create(option)
+        })
+        .then(()=>{
+            res.redirect(`/${userid}/mainhome`)
+        }).catch(err=>{
+            if(err.name === "SequelizeValidationError") {
+                err = err.errors
+                err = err.map(e=>{return e.message})
+            }
+            res.redirect(`/${userid}/profile?error=${err}`)
+        })
     }
 }
 
