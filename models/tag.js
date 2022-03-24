@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Tag.hasMany(models.PostTag, { foreignKey: 'TagId' })
-      Tag.belongsToMany(models.Post, { through: models.PostTag })
+      this.hasMany(models.PostTag, { foreignKey: 'TagId' })
+      this.belongsToMany(models.Post, { through: models.PostTag })
     }
   }
   Tag.init({
