@@ -4,20 +4,20 @@
     "gender": "Male",
     "registeredEmail": "Fitrah@gmail.com",
     "selfDescription": "Saya uploader terkece",
-    "UserId": 1
+    "MemberId": 1
   },
   {
     "name": "Nada",
     "gender": "Male",
     "registeredEmail": "Nanda@gmail.com",
     "selfDescription": "Saya siapa",
-    "UserId": 2
+    "MemberId": 2
   },
   {
     "name": "Romzi",
     "gender": "Male",
     "registeredEmail": "ROmzi@gmail.com",
     "selfDescription": "Saya romzi",
-    "UserId": 3
+    "MemberId": 3
   }
 ]

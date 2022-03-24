@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('fs')
+const bcrypt = require('bcryptjs');
 
 module.exports = {
  up (queryInterface, Sequelize) {
@@ -14,10 +15,13 @@ module.exports = {
     */
      let data = JSON.parse(fs.readFileSync('./data/member.json','utf-8'))
      data.forEach(element => {
+      const salt = bcrypt.genSaltSync(8);
+      const hash = bcrypt.hashSync(element.password, salt);
+      element.password = hash 
        element.createdAt = new Date()
        element.updatedAt = new Date()
      })
-
+     console.log(data);
      return queryInterface.bulkInsert('Members',data,{})
   },
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const {Profile,Member} = require('../models/index')
+const {Profile,Member,Post} = require('../models/index')
 const member = require('../models/member')
 const bcrypt = require('bcryptjs')
 
@@ -10,7 +10,8 @@ class Controller{
     }
 
     static SignUp(req,res){
-        res.render('signup')
+        const {error} = req.query
+        res.render('signup',{error})
     }
 
     static SignUpPost(req,res){
@@ -29,34 +30,60 @@ class Controller{
                 err = err.errors
                 err = err.map(e=>{return e.message})
             }
-            res.send(err)
+            res.redirect(`/signup?error=${err}`)
         })
     }
 
     static login(req,res){
-        res.render('login')
+        const { error } = req.query
+        res.render('login',{error})
     }
 
     static loginpost(req,res){
         const {email,password} = req.body
    
-        console.log( req.body);
         Member.findOne({
-            where : {email}
+            where : {email},
+            include : Profile
         })
         .then(result=>{
             if(result){
                 const valid = bcrypt.compareSync(password, result.password)
                 if(valid){
-                    res.redirect('/')
+                    req.session.member = result.id
+                    return res.redirect(`/${result.id}/mainhome`)
                 }else{  
                     const error = 'invalid username/password'
-                    res.redirect(`./login?error=${error}`)
+                    return res.redirect(`./login?error=${error}`)
                 }
             }else{
                 const error = 'invalid username/password'
-                res.redirect(`./login?error=${error}`)
+                return res.redirect(`./login?error=${error}`)
             }
+        })
+        .catch(err=>{
+            console.log(err);
+            res.send(err)
+        })
+    }
+
+    static mainhome(req,res){
+        const {userid} = req.params
+        let data = {}
+        Member.findByPk(userid,{
+            include : [Profile]
+        })
+        .then(member=>{
+            data.member = member
+            return Post.findAll()
+        })
+        .then(Post=>{
+            data.Post = Post
+            res.render('mainhome',{data})
+        })
+        .catch(err=>{
+            console.log(err);
+            res.send(err)
         })
     }
 }

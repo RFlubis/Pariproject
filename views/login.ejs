@@ -7,13 +7,19 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Loginsss/h1><br><br>
+    <h1>Login<br></h1>
+    <div>
+        <a href="/signup">sign up</a>
+    </div><br>
+    <% if(error) {%> 
+        <p style="color: red;"><%= error %> </p>
+    <% } %> 
     <form action="/login" method="post">
         <label>Email</label><br>
         <input type="text" id="fname" name="email" value=""><br>
         <label>Password</label><br>
         <input type="text" id="lname" name="password" value=""><br><br>
         <input type="submit" value="Submit">
-      </form> 
+    </form>
 </body>
 </html>

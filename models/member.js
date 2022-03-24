@@ -13,8 +13,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      
       Member.hasOne(models.Profile)
       Member.hasMany(models.Post)
+
     }
   }
   Member.init({

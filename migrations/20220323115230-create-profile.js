@@ -20,7 +20,7 @@ module.exports = {
       selfDescription: {
         type: Sequelize.STRING
       },
-      UserId: {
+      MemberId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Members',
