@@ -14,9 +14,13 @@ router.post('/login', Controller.loginpost)
 
 router.use((req, res, next) => {
     console.log(req.session);
-    console.log('Time:', Date.now())
-    next()
-  })
+    if(!req.session.member){
+      const error = 'plese login first'
+      res.redirect(`/login?error=${error}`)
+    }else{
+      next()
+    }
+})
 
 router.get('/:userid/profile', Controller.profile)
 router.post('/:userid/profile', Controller.profilepost)
