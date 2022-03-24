@@ -48,7 +48,7 @@ class Controller {
             include: [Profile]
         })
             .then(result => {
-                // res.send(result)
+                res.send(result)
                 if (result) {
                     const valid = bcrypt.compareSync(password, result.password)
                     if (valid) {
