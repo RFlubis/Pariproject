@@ -24,16 +24,26 @@ router.post('/signup', Controller.SignUpPost)
 router.get('/login', Controller.login)
 router.post('/login', Controller.loginpost)
 
-// router.use((req, res, next) => {
-//     console.log(req.session);
-//     console.log('Time:', Date.now())
-//     next()
-//   })
+router.get('/logout', Controller.logout)
+
+router.use((req, res, next) => {
+  console.log(req.session);
+  if(!req.session.member){
+    const error = 'plese login first'
+    res.redirect(`/login?error=${error}`)
+  }else{
+    next()
+  }
+})
+
+
 
 router.get('/:userid/profile', Controller.profile)
 router.post('/:userid/profile', Controller.profilepost)
 router.get('/:userid/mainhome', Controller.mainhome)
 router.get('/:userid/creator', Controller.addGifGet)
+router.get('/:userid/creator/like', Controller.like)
+router.get('/:userid/creator/dislike', Controller.dilike)
 router.post('/:userid/creator', upload.single('avatar'), Controller.addGifPost)
 
 module.exports = router
