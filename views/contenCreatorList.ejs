@@ -9,17 +9,19 @@
 </head>
 
 <body>
-    <h1>Main Home</h1><br><br>
-    </h1><br><br>
+    <h3>Selamat Datang <%=result.Profile.name%>
+    </h3>
 
-    <button onclick="location.href='/<%= data.member.id%>/creator'">Content crator</button><br><br>
+    <h2>Berikut Konten yang anda buat</h2>
+    <button onclick="location.href='/<%= result.id%>/creator/add'">Add Content</button><br><br>
     <table border="1">
         <tr>
             <th>Title</th>
-            <th>Gifs</th>
+            <th>Content</th>
             <th>Description</th>
+            <th>Action</th>
         </tr>
-        <% data.Post.forEach(e=>{%>
+        <% result.Posts.forEach(e=>{%>
             <tr>
                 <td>
                     <%= e.title %>
@@ -27,6 +29,10 @@
                 <td><img src='/<%=e.fileUpload%>' width="250" height="250"></td>
                 <td>
                     <%= e.description %>
+                </td>
+                <td>
+                    <a href="/<%=result.id%>/<%=e.id%>/delete"><button>Delete Content</button></a>
+                    <a href="/<%=result.id%>/<%=e.id%>/edit"><button>edit Content</button></a>
                 </td>
             </tr>
             <%}) %>

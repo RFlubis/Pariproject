@@ -3,6 +3,7 @@
 const { Profile, Member, Post } = require('../models/index')
 const member = require('../models/member')
 const bcrypt = require('bcryptjs')
+const res = require('express/lib/response')
 
 class Controller {
     static Home(req, res) {
@@ -124,13 +125,26 @@ class Controller {
             })
     }
 
-    static addGifGet(req, res) {
+    static creatorContentList(req, res) {
+        const { userid } = req.params
+
+        Member.findByPk(userid, {
+            include: [Post, Profile]
+        })
+            .then((result) => {
+                res.render('contenCreatorList', { result })
+            })
+            .catch((err) => {
+                res.send(err)
+            })
+    }
+
+    static creatorAddGifGet(req, res) {
         const { userid } = req.params
         res.render("addContent", { userid })
     }
 
-    static addGifPost(req, res) {
-        // res.send(req.file.path)
+    static creatorAddGifPost(req, res) {
         const { userid } = req.params
         const { filename } = req.file
         const { title, description } = req.body
@@ -140,13 +154,67 @@ class Controller {
 
         Post.create(newPost)
             .then(() => {
-                res.redirect('./mainhome')
+                res.redirect('../creator')
             }).catch(err => {
-                if (err.name === "SequelizeValidationError") {
-                    err = err.errors
-                    err = err.map(e => { return e.message })
-                }
-                res.redirect(`/signup?error=${err}`)
+                res.send(err)
+            })
+    }
+
+    static deletePost(req, res) {
+        const { postid } = req.params
+
+        Post.findByPk(postid, {
+            include: [Member]
+        })
+            .then((result) => {
+                return Post.destroy({
+                    where: {
+                        id: result.id
+                    }
+                })
+            })
+            .then(() => {
+                res.redirect('../creator')
+            })
+            .catch((err) => {
+                res.send(err)
+            })
+
+    }
+
+    static editPostGet(req, res) {
+        const { postid } = req.params
+        Post.findByPk(postid)
+            .then((result) => {
+
+                res.render("editContent", { result })
+            })
+            .catch((err) => {
+                res.send(err)
+            })
+
+    }
+    static editPostPost(req, res) {
+        const { postid } = req.params
+        const { title, avatar, description } = req.body
+        let editPost = {
+            title, fileUpload: avatar, description
+        }
+        Post.findByPk(postid, {
+            include: [Member]
+        })
+            .then(() => {
+                return Post.update(editPost, {
+                    where: {
+                        id: postid
+                    }
+                })
+            })
+            .then(() => {
+                res.redirect('../creator')
+            })
+            .catch((err) => {
+                res.send(err)
             })
     }
 }
