@@ -24,7 +24,10 @@ router.post('/signup', Controller.SignUpPost)
 router.get('/login', Controller.login)
 router.post('/login', Controller.loginpost)
 
+router.get('/logout', Controller.logout)
+
 router.use((req, res, next) => {
+  console.log(req.session);
   if(!req.session.member){
     const error = 'plese login first'
     res.redirect(`/login?error=${error}`)
@@ -32,6 +35,8 @@ router.use((req, res, next) => {
     next()
   }
 })
+
+
 
 router.get('/:userid/profile', Controller.profile)
 router.post('/:userid/profile', Controller.profilepost)

@@ -10,6 +10,7 @@
 
 <body>
     <h1>Main Home</h1><br><br>
+    <button onclick="location.href='/Logout'">Log Out</button><br><br>
     <% if(data.profile.dataValues.Member.dataValues.role === "ContentCreator"){%>
         <button onclick="location.href='/<%= userid %>/creator'">Content crator</button><br><br>
     <%} %> 
