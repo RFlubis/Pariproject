@@ -14,14 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       Post.belongsTo(models.Member)
       Post.hasMany(models.PostTag, { foreignKey: 'PostId' })
       Post.belongsToMany(models.Tag, { through: models.PostTag })
+
     }
   }
   Post.init({
     title: DataTypes.STRING,
-    videoUrl: DataTypes.STRING,
+    fileUpload: DataTypes.STRING,
     description: DataTypes.STRING,
-    TagId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER
+    MemberId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Post',

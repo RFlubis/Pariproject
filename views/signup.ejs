@@ -20,5 +20,11 @@
           </select><br><br>
         <input type="submit" value="Submit">
       </form> 
+      <% if(error){%> 
+        <% error = error.split(',') %> 
+        <% error.forEach(element => { %> 
+          <p style="color: red"><%= element %> </p>
+        <%}); %> 
+      <% } %> 
 </body>
 </html>
