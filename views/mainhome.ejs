@@ -10,12 +10,17 @@
 
 <body>
     <h1>Main Home</h1><br><br>
-    <button onclick="location.href='/<%= data.member.id%>/creator'">Content crator</button><br><br>
+    <% if(data.profile.dataValues.Member.dataValues.role === "ContentCreator"){%>
+        <button onclick="location.href='/<%= userid %>/creator'">Content crator</button><br><br>
+    <%} %> 
     <table border="1">
         <tr>
             <th>Title</th>
             <th>Gifs</th>
             <th>Description</th>
+            <th>Creator</th>
+            <th>like</th>
+            <th>Action</th>
         </tr>
         <% data.Post.forEach(e=>{%>
             <tr>
@@ -25,6 +30,14 @@
                 <td><img src='/<%=e.fileUpload%>'></td>
                 <td>
                     <%= e.description %>
+                </td>
+                <td><%= e.Profile.name %></td>
+                <td><%= e.like %></td>
+                <td>
+                    <button onclick="location.href='/<%= e.id %>/creator/like'">Like</button><br><br>
+                    <% if(e.like !== 0){ %>
+                        <button onclick="location.href='/<%= e.id %>/creator/dislike'">Dislike</button><br><br>
+                    <% } %> 
                 </td>
             </tr>
             <%}) %>

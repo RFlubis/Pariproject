@@ -21,7 +21,7 @@ class Controller {
             password,
             role
         }
-
+        
         Member.create(option)
             .then(() => {
                 res.redirect('/login')
@@ -42,7 +42,7 @@ class Controller {
     static loginpost(req, res) {
         const { email, password } = req.body
 
-
+        console.log(email, password);
         Member.findOne({
             where: { email },
             include: [Profile]
@@ -51,13 +51,12 @@ class Controller {
 
                 if (result) {
                     const valid = bcrypt.compareSync(password, result.password)
-
                     if (valid) {
                         req.session.member = result.id
                         if (!result.Profile) {
                             return res.redirect(`/${result.id}/profile`)
                         }
-                        return res.redirect(`/${result.id}/mainhome`)
+                        return res.redirect(`/${result.Profile.id}/mainhome`)
                     } else {
                         const error = 'invalid username/password'
                         return res.redirect(`./login?error=${error}`)
@@ -76,16 +75,21 @@ class Controller {
     static mainhome(req, res) {
         const { userid } = req.params
         let data = {}
-        Member.findByPk(userid, {
-            include: [Profile]
+        Profile.findByPk(userid, {
+            include: [Member]
         })
-            .then(member => {
-                data.member = member
-                return Post.findAll()
+            .then(profile => {
+                
+                data.profile = profile
+                
+                return Post.findAll({
+                    include: [Profile],
+                    order : ['id']
+                })
             })
             .then(Post => {
                 data.Post = Post
-                res.render('mainhome', { data })
+                res.render('mainhome', { data,userid })
             })
             .catch(err => {
                 console.log(err);
@@ -96,6 +100,7 @@ class Controller {
     static profile(req, res) {
         const { error } = req.query
         const { userid } = req.params
+        console.log(userid);
         res.render('profile', { userid, error })
     }
 
@@ -114,8 +119,16 @@ class Controller {
                 return Profile.create(option)
             })
             .then(() => {
-                res.redirect(`/${userid}/mainhome`)
-            }).catch(err => {
+                return Profile.findOne({
+                    where : {
+                        MemberId : userid
+                    }
+                })
+            })
+            .then((result) => {
+                res.redirect(`/${result.id}/mainhome`)
+            })
+            .catch(err => {
                 if (err.name === "SequelizeValidationError") {
                     err = err.errors
                     err = err.map(e => { return e.message })
@@ -135,7 +148,7 @@ class Controller {
         const { filename } = req.file
         const { title, description } = req.body
         let newPost = {
-            title, fileUpload: filename, description, MemberId: userid
+            title, fileUpload: filename, description, ProfileId: userid
         }
 
         Post.create(newPost)
@@ -147,6 +160,29 @@ class Controller {
                     err = err.map(e => { return e.message })
                 }
                 res.redirect(`/signup?error=${err}`)
+            })
+    }
+
+    static like(req, res) {
+        const { userid } = req.params
+        
+   
+        Post.increment({like: 1}, { where: { id: userid } })
+            .then(() => {
+                res.redirect(`/${userid}/mainhome`)
+            }).catch(err => {
+                res.redirect(err)
+            })
+    }
+
+    static dilike(req, res) {
+        const { userid } = req.params
+      
+        Post.decrement({like: 1}, { where: { id: userid } })
+            .then(() => {
+                res.redirect(`/${userid}/mainhome`)
+            }).catch(err => {
+                res.redirect(err)
             })
     }
 }

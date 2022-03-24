@@ -17,10 +17,10 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-      MemberId: {
+      ProfileId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Members',
+          model: 'Profiles',
           key: 'id'
         }
       },
