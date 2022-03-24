@@ -54,7 +54,7 @@ class Controller {
 
                     if (valid) {
                         req.session.member = result.id
-                        if(!result.Profile){
+                        if (!result.Profile) {
                             return res.redirect(`/${result.id}/profile`)
                         }
                         return res.redirect(`/${result.id}/mainhome`)
@@ -93,35 +93,61 @@ class Controller {
             })
     }
 
-    static profile(req,res){
-        const {error} = req.query
-        const {userid} = req.params
-        res.render('profile',{userid,error})
+    static profile(req, res) {
+        const { error } = req.query
+        const { userid } = req.params
+        res.render('profile', { userid, error })
     }
 
-    static profilepost(req,res){
-        const {userid} = req.params
-        const {name,gender,selfDescription} = req.body
+    static profilepost(req, res) {
+        const { userid } = req.params
+        const { name, gender, selfDescription } = req.body
         const option = {
             name,
             gender,
             selfDescription,
-            MemberId : userid
+            MemberId: userid
         }
         Member.findByPk(userid)
-        .then(result=>{
-            option.registeredEmail = result.email
-            return Profile.create(option)
-        })
-        .then(()=>{
-            res.redirect(`/${userid}/mainhome`)
-        }).catch(err=>{
-            if(err.name === "SequelizeValidationError") {
-                err = err.errors
-                err = err.map(e=>{return e.message})
-            }
-            res.redirect(`/${userid}/profile?error=${err}`)
-        })
+            .then(result => {
+                option.registeredEmail = result.email
+                return Profile.create(option)
+            })
+            .then(() => {
+                res.redirect(`/${userid}/mainhome`)
+            }).catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    err = err.errors
+                    err = err.map(e => { return e.message })
+                }
+                res.redirect(`/${userid}/profile?error=${err}`)
+            })
+    }
+
+    static addGifGet(req, res) {
+        const { userid } = req.params
+        res.render("addContent", { userid })
+    }
+
+    static addGifPost(req, res) {
+        // res.send(req.file.path)
+        const { userid } = req.params
+        const { filename } = req.file
+        const { title, description } = req.body
+        let newPost = {
+            title, fileUpload: filename, description, MemberId: userid
+        }
+
+        Post.create(newPost)
+            .then(() => {
+                res.redirect('./mainhome')
+            }).catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    err = err.errors
+                    err = err.map(e => { return e.message })
+                }
+                res.redirect(`/signup?error=${err}`)
+            })
     }
 }
 
