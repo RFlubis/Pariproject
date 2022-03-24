@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 const router = require('./router/ContentCreator')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
 const session = require('express-session')
 
 app.set('view engine', 'ejs')
@@ -12,7 +14,7 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true }
+  cookie: { secure: false }
 }))
 
 app.use(router)

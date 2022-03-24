@@ -13,22 +13,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
       this.hasOne(models.Profile)
       this.hasMany(models.Post)
+
     }
   }
   Member.init({
     email: {
-      type:DataTypes.STRING,
+      type: DataTypes.STRING,
       validate: {
-        notEmpty: {msg : 'Please input Email'},
+        notEmpty: { msg: 'Please input Email' },
         isEmail: true
       }
     },
     password: {
-      type:DataTypes.STRING,
+      type: DataTypes.STRING,
       validate: {
-        notEmpty: {msg : 'Please input password'},
+        notEmpty: { msg: 'Please input password' },
         isEven(value) {
           if (value.length < 8) {
             throw new Error('Password min 8 character');
@@ -37,15 +39,15 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     role: {
-      type:DataTypes.STRING,
+      type: DataTypes.STRING,
       validate: {
-        notEmpty: {msg : 'Please choose role'}
+        notEmpty: { msg: 'Please choose role' }
       }
     }
   }, {
     sequelize,
-     hooks: {
-      beforeCreate : (instance, options) => {
+    hooks: {
+      beforeCreate: (instance, options) => {
         const salt = bcrypt.genSaltSync(8);
         const hash = bcrypt.hashSync(instance.password, salt);
         instance.password = hash
