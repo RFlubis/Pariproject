@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 const router = require('./router/ContentCreator')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 app.set('view engine', 'ejs')
 
