@@ -2,6 +2,7 @@
 
 const { Profile, Member, Post } = require('../models/index')
 const bcrypt = require('bcryptjs')
+const dateFormat = require('../helpers/dateFormat')
 
 class Controller {
     static Home(req, res) {
@@ -90,7 +91,7 @@ class Controller {
             .then(Post => {
                 data.Post = Post
                 console.log(data);
-                res.render('mainhome', { data, userid })
+                res.render('mainhome', { data, userid, dateFormat })
             })
             .catch(err => {
                 console.log(err);
@@ -145,7 +146,6 @@ class Controller {
             include: [Post]
         })
             .then((result) => {
-                // console.log(result);
                 res.render('contenCreatorList', { result })
             })
             .catch((err) => {

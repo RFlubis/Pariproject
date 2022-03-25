@@ -43,7 +43,8 @@
                             <%= e.description %>
                         </td>
                         <td>
-                            <%= e.Profile.name %>
+                            Posted by <%= e.Profile.name %>,<br>
+                                on <%= dateFormat(e.Profile.createdAt) %>
                         </td>
                         <td>
                             <%= e.like %>

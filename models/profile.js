@@ -9,6 +9,16 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+
+    genderCaller(name) {
+      if (this.gender === "male" || this.gender === "Male") {
+        return `Mr. ${name}`
+      }
+      if (this.gender === "female" || this.gender === "Female") {
+        return `Mrs. ${name}`
+      }
+    }
+
     static associate(models) {
       // define association here
       this.hasMany(models.Post)
@@ -18,29 +28,29 @@ module.exports = (sequelize, DataTypes) => {
   }
   Profile.init({
     name: {
-      type : DataTypes.STRING,
+      type: DataTypes.STRING,
       validate: {
-        notEmpty: {msg : 'Please input name'}
+        notEmpty: { msg: 'Please input name' }
       }
     },
     gender: {
-      type : DataTypes.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {msg : 'Please choose gender'}
+        notNull: { msg: 'Please choose gender' }
       }
     },
     registeredEmail: {
-      type : DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     selfDescription: {
-      type : DataTypes.STRING,
+      type: DataTypes.STRING,
       validate: {
-        notEmpty: {msg : 'Please input selfDescription'}
+        notEmpty: { msg: 'Please input selfDescription' }
       }
     },
     MemberId: {
-      type : DataTypes.INTEGER
+      type: DataTypes.INTEGER
     },
   }, {
     sequelize,
