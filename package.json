@@ -4,7 +4,8 @@
   "description": "1. Buatlah public/private repository baru\r 2. Centang initialize readme option  \r \t![new-repository](assets/new-repository.png)\r 3. Buat branch baru bernama `development` dari branch `master` / `main`  \r \t![development-branch](assets/development-branch.png)\r 4. Buka settings - branches dan ubah default branch menjadi `development`  \r \t![default-branch](assets/default-branch.png)\r 5. Buka settings - manage access dan invite teman pair dan instruktur  \r \t![invite](assets/invite.png)\r 6. Clone repository, inisialisasi project structure & file minimum untuk memulai project, kemudian push ke `development`  \r \t![initial](assets/initial.png)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
